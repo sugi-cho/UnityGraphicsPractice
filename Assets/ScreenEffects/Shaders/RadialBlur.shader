@@ -18,18 +18,29 @@
 		static const half curve[7] = { 0.0205, 0.0855, 0.232, 0.324, 0.232, 0.0855, 0.0205 };
 			
 		half2 getUvRotated(half2 uv, half2 center, half angle){
+			//angleが1で、１回転するようにする。
 			angle *= PI*2.0;
 			half2 d = _MainTex_TexelSize.xy;
-			float s,c;
-			sincos(angle,s,c);
+			
+			//いったん、変形の中心座標を(0,0,0)に持ってきてから計算する。
 			uv -= center;
+			//アスペクト比の違いに対応できるよう調整
 			uv.x *= d.y/d.x;
+			
+			float s,c;
+			//s = sin(angle), c = cos(angle)が入る関数
+			sincos(angle,s,c);
+			
+			//２次元の回転行列求め、mul()で計算する
 			float2x2 rot = float2x2(
 				c,-s,
 				s, c
 			);
 			uv = mul(rot,uv);
+			
+			//アスペクト比を元に戻す
 			uv.x /= d.y/d.x;
+			//中心の位置を元に戻す
 			uv += center;
 			return uv;
 		}
@@ -37,7 +48,10 @@
 			half2 d = _MainTex_TexelSize.xy;
 			uv -= center;
 			uv.x *= d.y/d.x;
+			
+			//(0,0,0)を中心にuvをスケール（拡大）
 			uv *= 1.0+scale;
+			
 			uv.x /= d.y/d.x;
 			uv += center;
 			return uv;

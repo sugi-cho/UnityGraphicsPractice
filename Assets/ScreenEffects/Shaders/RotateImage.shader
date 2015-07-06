@@ -33,7 +33,6 @@
 		half4 frag(v2f_img i) : COLOR{
 			half2 uv = getUvRotated(i.uv,_Center,_Amount*_Time.y);
 			half4 c = tex2D(_MainTex, frac(uv));
-			c = 2*c*c;
 			return c;
 		}
 	ENDCG
