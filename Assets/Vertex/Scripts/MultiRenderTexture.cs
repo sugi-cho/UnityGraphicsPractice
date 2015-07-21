@@ -7,12 +7,13 @@ public class MultiRenderTexture : MonoBehaviour
 {
     public int numOutputs = 2;
     public int texSize = 64;
-    public Material initMat;
     public Material updateMat;
     public string propName = "_MrTex";
     RenderTexture[] outputTextures;
-    [SerializeField]
     List<RenderTexture[]> rtsList;
+    [SerializeField]
+    RenderTexture rt;
+    bool showTex;
 
 
     // Use this for initialization
@@ -21,11 +22,26 @@ public class MultiRenderTexture : MonoBehaviour
         rtsList = new List<RenderTexture[]>(numOutputs);
         for (var i = 0; i < numOutputs; i++)
         {
-            var rts = new RenderTexture[2] {
-                new RenderTexture(texSize, texSize, 0),
-                new RenderTexture(texSize, texSize, 0)
-            };
+            var rts = CreateTextures();
+            rtsList.Add(rts);
         }
+        rt = rtsList[0][0];
+    }
+    RenderTexture[] CreateTextures()
+    {
+        RenderTexture[] rts = new RenderTexture[2];
+        for (var i = 0; i < 2; i++)
+        {
+            var rt = new RenderTexture(texSize, texSize, 16, RenderTextureFormat.ARGBHalf);
+            rt.wrapMode = TextureWrapMode.Repeat;
+            rt.filterMode = FilterMode.Point;
+            rt.Create();
+            RenderTexture.active = rt;
+            GL.Clear(true, true, Color.clear);
+
+            rts[i] = rt;
+        }
+        return rts;
     }
 
     void OnDestroy()
@@ -46,7 +62,7 @@ public class MultiRenderTexture : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Render();
+        Render(Input.GetMouseButton(0) ? 1 : 0);
         SetProps();
     }
 
@@ -92,6 +108,16 @@ public class MultiRenderTexture : MonoBehaviour
         {
             var pName = propName + i.ToString();
             Shader.SetGlobalTexture(pName, rtsList[i][0]);
+        }
+    }
+
+    void OnGUI()
+    {
+        if (!showTex)
+            return;
+        for (var i = 0; i < rtsList.Count; i++)
+        {
+            GUILayout.Label(rtsList[i][0], GUILayout.Width(texSize));
         }
     }
 }
