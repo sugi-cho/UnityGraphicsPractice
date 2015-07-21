@@ -12,7 +12,6 @@ public class MultiRenderTexture : MonoBehaviour
     RenderTexture[] outputTextures;
     List<RenderTexture[]> rtsList;
     [SerializeField]
-    RenderTexture rt;
     bool showTex;
 
 
@@ -25,7 +24,7 @@ public class MultiRenderTexture : MonoBehaviour
             var rts = CreateTextures();
             rtsList.Add(rts);
         }
-        rt = rtsList[0][0];
+        Render(0);
     }
     RenderTexture[] CreateTextures()
     {
@@ -62,8 +61,13 @@ public class MultiRenderTexture : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Render(Input.GetMouseButton(0) ? 1 : 0);
-        SetProps();
+        //  if (Input.GetKey(KeyCode.Space))
+        //      Render(4);
+        //  if (Input.GetMouseButton(0))
+        //      Render(2);
+        //  if (Input.GetKey(KeyCode.R))
+        //      Render(3);
+        Render(1);
     }
 
     void Render(int pass = 0)
@@ -72,6 +76,7 @@ public class MultiRenderTexture : MonoBehaviour
         var dBuffer = rtsList[0][0].depthBuffer;
         Graphics.SetRenderTarget(cBuffers, dBuffer);
         DrawQuad(updateMat, pass);
+        SetProps();
         SwapRts();
         Graphics.SetRenderTarget(null);
     }
