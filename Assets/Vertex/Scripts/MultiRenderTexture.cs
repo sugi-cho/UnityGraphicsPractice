@@ -13,6 +13,7 @@ public class MultiRenderTexture : MonoBehaviour
     List<RenderTexture[]> rtsList;
     [SerializeField]
     bool showTex;
+    bool stop;
 
 
     // Use this for initialization
@@ -31,7 +32,7 @@ public class MultiRenderTexture : MonoBehaviour
         RenderTexture[] rts = new RenderTexture[2];
         for (var i = 0; i < 2; i++)
         {
-            var rt = new RenderTexture(texSize, texSize, 16, RenderTextureFormat.ARGBHalf);
+            var rt = new RenderTexture(texSize, texSize, 16, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
             rt.wrapMode = TextureWrapMode.Repeat;
             rt.filterMode = FilterMode.Point;
             rt.Create();
@@ -61,12 +62,20 @@ public class MultiRenderTexture : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //  if (Input.GetKey(KeyCode.Space))
-        //      Render(4);
-        //  if (Input.GetMouseButton(0))
-        //      Render(2);
-        //  if (Input.GetKey(KeyCode.R))
-        //      Render(3);
+        if (Input.GetKeyDown(KeyCode.S))
+            stop = !stop;
+        if (Input.GetKey(KeyCode.C))
+            Render(6);
+        if (stop)
+            return;
+        if (Input.GetMouseButton(0))
+            Render(2);
+        if (Input.GetKey(KeyCode.R))
+            Render(3);
+        if (Input.GetKey(KeyCode.Space))
+            Render(4);
+
+        Render(5);
         Render(1);
     }
 
