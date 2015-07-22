@@ -21,6 +21,7 @@
 
 		struct Input {
 			float2 uv_MainTex;
+			float4 vColor;
 		};
 
 		half _Glossiness;
@@ -32,16 +33,23 @@
 			_MrTex0,
 			_MrTex1;
 		
-		void vert(inout appdata_full v){
-			float2 uv = float2(frac(v.texcoord1.x/TexSize), v.texcoord1.x/TexSize/TexSize);
-			float3 pos = tex2Dlod(_MrTex0,float4(uv,0,1));
+		void vert(inout appdata_full v, out Input o){
+			float id = v.texcoord1.x + _Offset;
+			float2 uv = float2(frac(id/TexSize), id/TexSize/TexSize);
+			float3 pos = tex2Dlod(_MrTex0,float4(uv,0,0));
+			if(id >= TexSize*TexSize)
+				v.vertex.xyz *= 0;
+			v.vertex.xyz *= 0.5;
 			v.vertex.xyz += pos;
+			
+			UNITY_INITIALIZE_OUTPUT(Input,o);
+			o.vColor = float4(uv,id/TexSize/TexSize,1);
 		}
 		
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			// Albedo comes from a texture tinted by color
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-			o.Albedo = c.rgb;
+			o.Albedo = c.rgb*IN.vColor;
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
