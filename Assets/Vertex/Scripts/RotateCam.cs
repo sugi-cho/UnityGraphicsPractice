@@ -13,6 +13,6 @@ public class RotateCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.RotateAround(Vector3.zero, Vector3.up, 5.0f * Time.deltaTime);
+        transform.RotateAround(Vector3.zero, Vector3.up, 45.0f * Time.deltaTime);
     }
 }

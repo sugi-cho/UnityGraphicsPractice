@@ -39,7 +39,7 @@
 			float3 pos = tex2Dlod(_MrTex0,float4(uv,0,0));
 			if(id >= TexSize*TexSize)
 				v.vertex.xyz *= 0;
-			v.vertex.xyz *= 0.5;
+			v.vertex.xyz *= 0.5 + id/8000;
 			v.vertex.xyz += pos;
 			
 			UNITY_INITIALIZE_OUTPUT(Input,o);

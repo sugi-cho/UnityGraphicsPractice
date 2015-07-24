@@ -40,7 +40,7 @@ public class MassMeshes : MonoBehaviour
 
         for (var i = 0; i < numInSingleMesh; i++)
         {
-            for (var j = 0; j < origin.vertexCount; j++)
+			for (var j = 0; j < origin.vertexCount; j++)
             {
                 var index = j + i * origin.vertexCount;
                 vertices[index] = origin.vertices[j];
